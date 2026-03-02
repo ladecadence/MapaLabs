@@ -1,0 +1,4 @@
+name: MapaLabs Local
+variables:
+  - name: host
+    value: localhost:8080

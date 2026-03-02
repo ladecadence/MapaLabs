@@ -1,0 +1,55 @@
+info:
+  name: Post  Lab
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://{{host}}/api/newlab
+  body:
+    type: multipart-form
+    data:
+      - name: image
+        type: file
+        value:
+          - /home/zako/Ladecadence/Devel/Go/MapaLabs/test/LCU_Aveiro.jpg
+      - name: name
+        type: text
+        value: "Red de Laboratorios Cívicos Urbanos "
+      - name: description
+        type: text
+        value: Espacio de diálogo y encuentro que forma parte de la Universidad de Aveiro. Este proyecto surge como una iniciativa de un grupo de ciudadanos e investigadores que buscan explorar la relación universidad - ciudad a partir de proyectos y espacios de innovación ciudadana para la incidencia local.
+      - name: city
+        type: text
+        value: Aveiro
+      - name: country
+        type: text
+        value: Portugal
+      - name: delegate
+        type: text
+        value: José Mota
+      - name: delegate_description
+        type: text
+        value: "José Mota es profesor e investigador de la Universidad de Aveiro, Portugal. Sus áreas de estudio y trabajo están relacionadas a las ciencias sociales y políticas de territorio, así como en los Laboratorios de Innovación con el proyecto Laboratorios Cívicos Urbanos. "
+      - name: web
+        type: text
+        value: https://www.facebook.com/labcivicourbano
+      - name: facebook
+        type: text
+        value: https://www.facebook.com/labcivicourbano?locale=es_LA
+      - name: latitude
+        type: text
+        value: "40.6307977072265"
+      - name: longitude
+        type: text
+        value: "-8.65747121702288"
+  auth:
+    type: basic
+    username: dpello
+    password: password
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

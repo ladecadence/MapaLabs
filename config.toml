@@ -1,0 +1,4 @@
+addr = "localhost"
+port = 8080
+database = "mapalabs.db"
+image_path = "static/images/"
