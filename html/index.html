@@ -17,27 +17,28 @@
     <header class="app-header">
         <h1>Laboratorios de Innovación Ciudadana</h1>
         <div class="header-controls">
-            <input type="text" id="search-input" placeholder="Buscar laboratorio..." aria-label="Buscar laboratorio"
-                autocomplete="off">
-            <select id="country-filter" aria-label="Filtrar por país">
-                <option value="">Todos los países</option>
-            </select>
+            <div class="header-controls-child">
+            </div>
+            <div class="header-controls-child">
+                <input type="text" id="search-input" placeholder="Buscar laboratorio..." aria-label="Buscar laboratorio"
+                    autocomplete="off">
+                <select id="country-filter" aria-label="Filtrar por país">
+                    <option value="">Todos los países</option>
+                </select>
+            </div>
+            <div class="header-controls-child">
+                {{if .Name}}
+                <span class="user-flair"><i class="fas fa-user"></i> {{.Name}}</span>
+                <button class="login-button" onclick="openModalNew()"><i class="fas fa-plus-square"></i> Añadir
+                    Lab</button>
+                <form id="logout-form" action="/logout" method="post">
+                    <button class="login-button" type="submit"><i class="fas fa-sign-out"></i> Logout</button>
+                </form>
+                {{else}}
+                <button class="login-button" onclick="openModalLogin()"><i class="fas fa-sign-in"></i> Login</button>
+                {{end}}
+            </div>
         </div>
-
-        {{if .Name}}
-        <div class="header-user">
-            <span class="user-flair"><i class="fas fa-user"></i> {{.Name}}</span>
-            <button class="login-button" onclick="openModalNew()"><i class="fas fa-plus-square"></i> Añadir Lab</button>
-            <form id="logout-form" action="/logout" method="post">
-                <button class="login-button" type="submit"><i class="fas fa-sign-out"></i> Logout</button>
-            </form>
-
-        </div>
-        {{else}}
-        <div class="header-user">
-            <button class="login-button" onclick="openModalLogin()"><i class="fas fa-sign-in"></i> Login</button>
-        </div>
-        {{end}}
     </header>
 
     <div class="app-body">
@@ -123,12 +124,14 @@
                         <option value="Uruguay">Uruguay</option>
                     </select><br><br>
 
-                    <label for="description"><i class="fa fa-file-text" aria-hidden="true"></i> Descripción del laboratorio:</label><br>
+                    <label for="description"><i class="fa fa-file-text" aria-hidden="true"></i> Descripción del
+                        laboratorio:</label><br>
                     <textarea rows="10" cols="80" id="description" name="description"></textarea><br><br>
-                    
-                    <label for="date"><i class="fa fa-calendar" aria-hidden="true"></i> Fecha de comienzo del Laboratorio:</label><br>
+
+                    <label for="date"><i class="fa fa-calendar" aria-hidden="true"></i> Fecha de comienzo del
+                        Laboratorio:</label><br>
                     <textarea rows="5" cols="80" id="date" name="date"></textarea><br><br>
-                    
+
                     <label for="web"><i class="fas fa-globe"></i> Página web:</label><br>
                     <input type="url" id="web" name="web" size="50"><br><br>
 
@@ -164,13 +167,16 @@
 
                     <label for="delegate"><i class="far fa-user"></i> Representante:</label><br>
                     <input type="text" id="delegate" name="delegate" size="50"><br><br>
-                    
-                    <label for="delegate_position"><i class="far fa-address-card"> </i> Cargo del representante:</label><br>
+
+                    <label for="delegate_position"><i class="far fa-address-card"> </i> Cargo del
+                        representante:</label><br>
                     <input type="text" id="delegate_position" name="delegate_position" size="50"><br><br>
-                    
-                    <label for="delegate_description"><i class="fas fa-user-tag"></i> Resumen del representante:</label><br>
-                    <textarea rows="5" cols="80" id="delegate_description" name="delegate_description"></textarea><br><br>
-                    
+
+                    <label for="delegate_description"><i class="fas fa-user-tag"></i> Resumen del
+                        representante:</label><br>
+                    <textarea rows="5" cols="80" id="delegate_description"
+                        name="delegate_description"></textarea><br><br>
+
                     <label for="image"><i class="fa fa-camera" aria-hidden="true"></i> Imagen:</label><br>
                     <input type="file" id="image" name="image" accept="image/*"><br><br>
 
