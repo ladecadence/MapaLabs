@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/ladecadence/MapaLabs/pkg/color"
 	"github.com/ladecadence/MapaLabs/pkg/config"
@@ -18,8 +19,7 @@ func main() {
 	configFile := flag.String("c", "config.toml", "Config file")
 	flag.Parse()
 
-	// try to load config file, if not, create a defualt configuration file
-	// at standard config directory
+	// try to load config file
 	conf, err := config.GetConfig(*configFile)
 	if err != nil {
 		fmt.Printf("Can't open configuration file %s\n", *configFile)
@@ -28,7 +28,7 @@ func main() {
 
 	// open and init database
 	database := &database.SQLite{}
-	_, err = database.Open(conf.Database)
+	_, err = database.Open(filepath.Join(conf.MainPath, conf.Database))
 	if err != nil {
 		panic("Error opening DB: " + err.Error())
 	}

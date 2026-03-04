@@ -11,7 +11,9 @@ const (
 type Config struct {
 	Addr      string `toml:"addr"`
 	Port      int    `toml:"port"`
+	URL       string `toml:"url"`
 	Database  string `toml:"database"`
+	MainPath  string `toml:"main_path"`
 	ImagePath string `toml:"image_path"`
 	Version   string
 }

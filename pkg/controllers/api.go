@@ -30,6 +30,12 @@ func ConfMiddleWare(dtb database.SQLite, c config.Config, h http.HandlerFunc) ht
 	})
 }
 
+func enableCors(writer http.ResponseWriter) {
+	writer.Header().Set("Access-Control-Allow-Origin", "*")
+	writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
 func GenTokens() (string, string) {
 	sessiontoken := make([]byte, 32)
 	csrftoken := make([]byte, 32)
@@ -63,6 +69,9 @@ func CheckBasicAuth(r *http.Request) bool {
 }
 
 func ApiGetLabs(writer http.ResponseWriter, request *http.Request) {
+	// enable CORS for this endpoint
+	enableCors(writer)
+
 	labs, err := db.GetLabs()
 
 	if err != nil || labs == nil {
@@ -79,6 +88,9 @@ func ApiGetLabs(writer http.ResponseWriter, request *http.Request) {
 }
 
 func ApiGetLab(writer http.ResponseWriter, request *http.Request) {
+	// enable CORS for this endpoint
+	enableCors(writer)
+
 	// get ID
 	sid := request.PathValue("id")
 	if sid == "" {
@@ -109,6 +121,9 @@ func ApiGetLab(writer http.ResponseWriter, request *http.Request) {
 }
 
 func ApiNewLab(writer http.ResponseWriter, request *http.Request) {
+	// enable CORS for this endpoint
+	enableCors(writer)
+
 	// check auth
 	authOk := CheckBasicAuth(request)
 

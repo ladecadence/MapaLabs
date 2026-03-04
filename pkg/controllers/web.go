@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -124,7 +125,8 @@ func WebLogout(writer http.ResponseWriter, request *http.Request) {
 }
 
 func WebRoot(writer http.ResponseWriter, request *http.Request) {
-	tmpl, err := template.ParseFiles("html/index.html")
+	tmpl, err := template.ParseFiles(filepath.Join(conf.MainPath, "html/index.html"))
+
 	if err != nil {
 		writer.WriteHeader(http.StatusInternalServerError)
 		writer.Write([]byte("Problem loading web page"))
@@ -162,7 +164,8 @@ func WebRoot(writer http.ResponseWriter, request *http.Request) {
 
 		if err != nil {
 			writer.WriteHeader(http.StatusInternalServerError)
-			writer.Write([]byte("Problem rendering web page"))
+			writer.Write([]byte("Problem rendering web page: "))
+			writer.Write([]byte(err.Error()))
 			return
 		}
 	}
@@ -176,7 +179,14 @@ func WebNewLab(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	// get data
+	// check CSRF
+	if err := CheckCSRF(request, db); err != nil {
+		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
+		http.Error(writer, "Unauthorized (CSRF)", http.StatusUnauthorized)
+		return
+	}
+
+	// ok, get data
 	file, handler, err := request.FormFile("image")
 	if err != nil {
 		log.Printf("❌ Error retrieving the file: %v", err.Error())
