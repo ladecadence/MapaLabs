@@ -11,6 +11,7 @@ type Lab struct {
 	Motivations         string  `json:"motivations"`
 	Networks            string  `json:"networks"`
 	Web                 string  `json:"web"`
+	Mastodon            string  `json:"mastodon"`
 	Instagram           string  `json:"instagram"`
 	Facebook            string  `json:"facebook"`
 	Twitter             string  `json:"twitter"`

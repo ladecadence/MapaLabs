@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +11,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="static/css/styles.css">
 </head>
+
 <body>
     <header class="app-header">
         <h1>Laboratorios de Innovación Ciudadana</h1>
         <div class="header-controls">
-            <input type="text" id="search-input" placeholder="Buscar laboratorio..." aria-label="Buscar laboratorio" autocomplete="off">
+            <input type="text" id="search-input" placeholder="Buscar laboratorio..." aria-label="Buscar laboratorio"
+                autocomplete="off">
             <select id="country-filter" aria-label="Filtrar por país">
                 <option value="">Todos los países</option>
             </select>
         </div>
+
+        {{if .Name}}
+        <div class="header-user">
+            <span class="user-flair"><i class="fas fa-user"></i> {{.Name}}</span>
+            <button class="login-button" onclick="openModalNew()"><i class="fas fa-plus-square"></i> Añadir Lab</button>
+            <form id="logout-form" action="/logout" method="post">
+                <button class="login-button" type="submit"><i class="fas fa-sign-out"></i> Logout</button>
+            </form>
+
+        </div>
+        {{else}}
+        <div class="header-user">
+            <button class="login-button" onclick="openModalLogin()"><i class="fas fa-sign-in"></i> Login</button>
+        </div>
+        {{end}}
     </header>
 
     <div class="app-body">
@@ -41,10 +59,133 @@
         </div>
     </div>
 
+    <!-- Modal / Login  -->
+    <div class="modal-overlay" id="modal-overlay-login">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <button class="modal-close" id="modal-close-login" aria-label="Cerrar">&times;</button>
+            <div class="modal-content" id="modal-content-login">
+                <h2 class="modal-title">Login</h2>
+                <form action="/login" method="post">
+                    <label for="username">User name:</label><br>
+                    <input type="text" id="username" name="username"><br>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password"><br><br>
+                    <input type="hidden" name="csrf" value="{{ .CSRF}}">
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal / New Lab  -->
+    <div class="modal-overlay" id="modal-overlay-new">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <button class="modal-close" id="modal-close-new" aria-label="Cerrar">&times;</button>
+            <div class="modal-content" id="modal-content-new">
+                <h2 class="modal-title">Añadir un Lab</h2>
+                <form action="/newlab" method="post" enctype="multipart/form-data">
+                    <label for="name"><i class="fa fa-id-card"></i> Nombre:</label><br>
+                    <input type="text" id="name" name="name" size="50"><br><br>
+
+                    <label><i class="fa fa-map-marker"></i> Posición:</label><br>
+                    <label for="latitude">Latitud: </label>
+                    <input type="number" step="any" id="latitude" name="latitude" size="20"><br>
+                    <label for="longitude">Longitud: </label>
+                    <input type="number" step="any" id="longitude" name="longitude" size="20"><br><br>
+
+                    <label for="city"><i class="fa fa-map-marker"></i> Ciudad:</label><br>
+                    <input type="text" id="city" name="city" size="50"><br><br>
+
+                    <label for="country"><i class="fa fa-home"></i> Pais:</label><br>
+                    <select id="country" name="country">
+                        <option value="Argentina">Argentina</option>
+                        <option value="Bolivia">Bolivia</option>
+                        <option value="Brasil">Brasil</option>
+                        <option value="Chile">Chile</option>
+                        <option value="Colombia">Colombia</option>
+                        <option value="Costa Rica">Costa Rica</option>
+                        <option value="Cuba">Cuba</option>
+                        <option value="El Salvador">El Salvador</option>
+                        <option value="España">España</option>
+                        <option value="Guatemala">Guatemala</option>
+                        <option value="Honduras">Honduras</option>
+                        <option value="Ecuador">Ecuador</option>
+                        <option value="México">México</option>
+                        <option value="Nicaragua">Nicaragua</option>
+                        <option value="Venezuela">Venezuela</option>
+                        <option value="Panamá">Panamá</option>
+                        <option value="Paraguay">Paraguay</option>
+                        <option value="Perú">Perú</option>
+                        <option value="Portugal">Portugal</option>
+                        <option value="Puerto Rico">Puerto Rico</option>
+                        <option value="República Dominicana">República Dominicana</option>
+                        <option value="Uruguay">Uruguay</option>
+                    </select><br><br>
+
+                    <label for="description"><i class="fa fa-file-text" aria-hidden="true"></i> Descripción del laboratorio:</label><br>
+                    <textarea rows="10" cols="80" id="description" name="description"></textarea><br><br>
+                    
+                    <label for="date"><i class="fa fa-calendar" aria-hidden="true"></i> Fecha de comienzo del Laboratorio:</label><br>
+                    <textarea rows="5" cols="80" id="date" name="date"></textarea><br><br>
+                    
+                    <label for="web"><i class="fas fa-globe"></i> Página web:</label><br>
+                    <input type="url" id="web" name="web" size="50"><br><br>
+
+                    <label for="mastodon"><i class="fa-brands fa-mastodon"></i> Mastodon:</label><br>
+                    <input type="text" id="mastodon" name="mastodon" size="50"><br><br>
+
+                    <label for="instagram"><i class="fab fa-instagram"></i> Instagram:</label><br>
+                    <input type="text" id="instagram" name="instagram" size="50"><br><br>
+
+                    <label for="facebook"><i class="fab fa-facebook-f"></i> Facebook:</label><br>
+                    <input type="text" id="facebook" name="facebook" size="50"><br><br>
+
+                    <label for="spotify"><i class="fab fa-spotify"></i> Spotify:</label><br>
+                    <input type="text" id="spotify" name="spotify" size="50"><br><br>
+
+                    <label for="twitter"><i class="fab fa-x-twitter"></i> Twitter:</label><br>
+                    <input type="text" id="twitter" name="twitter" size="50"><br><br>
+
+                    <label for="linkedin"><i class="fab fa-linkedin"></i> LinkedIn:</label><br>
+                    <input type="text" id="linkedin" name="linkedin" size="50"><br><br>
+
+                    <label for="tiktok"><i class="fab fa-tiktok"></i> TikTok:</label><br>
+                    <input type="text" id="tiktok" name="tiktok" size="50"><br><br>
+
+                    <label for="twitch"><i class="fab fa-twitch"></i> Twitch:</label><br>
+                    <input type="text" id="twitch" name="twitch" size="50"><br><br>
+
+                    <label for="flickr"><i class="fab fa-flickr"></i> Flickr:</label><br>
+                    <input type="text" id="flickr" name="flickr" size="50"><br><br>
+
+                    <label for="youtube"><i class="fab fa-youtube"></i> Youtube:</label><br>
+                    <input type="text" id="youtube" name="youtube" size="50"><br><br>
+
+                    <label for="delegate"><i class="far fa-user"></i> Representante:</label><br>
+                    <input type="text" id="delegate" name="delegate" size="50"><br><br>
+                    
+                    <label for="delegate_position"><i class="far fa-address-card"> </i> Cargo del representante:</label><br>
+                    <input type="text" id="delegate_position" name="delegate_position" size="50"><br><br>
+                    
+                    <label for="delegate_description"><i class="fas fa-user-tag"></i> Resumen del representante:</label><br>
+                    <textarea rows="5" cols="80" id="delegate_description" name="delegate_description"></textarea><br><br>
+                    
+                    <label for="image"><i class="fa fa-camera" aria-hidden="true"></i> Imagen:</label><br>
+                    <input type="file" id="image" name="image" accept="image/*"><br><br>
+
+                    <br>
+                    <input type="hidden" name="csrf" value="{{ .CSRF}}">
+                    <input type="submit" value="Enviar">
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
     <script src="static/js/script.js"></script>
 </body>
+
 </html>

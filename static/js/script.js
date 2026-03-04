@@ -58,8 +58,15 @@ let fuse = null;
 // ── Referencias DOM ───────────────────────────────────────
 const countryFilter = document.getElementById('country-filter');
 const modalOverlay = document.getElementById('modal-overlay');
+const modalOverlayLogin = document.getElementById('modal-overlay-login');
+const modalOverlayNew = document.getElementById('modal-overlay-new');
 const modalContent = document.getElementById('modal-content');
+const modalContentLogin = document.getElementById('modal-content-login');
+const modalContentNew = document.getElementById('modal-content-new');
 const modalClose = document.getElementById('modal-close');
+const modalCloseLogin = document.getElementById('modal-close-login');
+const modalCloseNew = document.getElementById('modal-close-new');
+
 const searchInput = document.getElementById('search-input');
 
 // ── Carga CSV ─────────────────────────────────────────────
@@ -169,6 +176,7 @@ fetch("http://localhost:8080/api/labs")
                     const descripcion = row.description || '';
                     const fechaComienzo = row.date || '';
                     const paginaWeb = row.web || '';
+                    const mastodon = row.mastodon || '';
                     const instagram = row.instagram || '';
                     const facebook = row.facebook || '';
                     const twitter = row.twitter || '';
@@ -188,7 +196,7 @@ fetch("http://localhost:8080/api/labs")
                     const labIndex = labs.length;
                     labs.push({
                         nombre, ciudad, pais, descripcion, fechaComienzo,
-                        paginaWeb, instagram, facebook, twitter, spotify,
+                        paginaWeb, mastodon, instagram, facebook, twitter, spotify,
                         linkedin, tiktok, twitch, youtube, representante,
                         cargoRepresentante, semblanza, imagen, flickr, lat, lng,
                     });
@@ -418,6 +426,7 @@ function showLabInfo(index) {
     // Redes sociales
     const socialDefs = [
         { key: 'paginaWeb', cls: 'website', icon: 'fas fa-globe', title: 'Sitio web' },
+        { key: 'mastodon', cls: 'mastodon', icon: 'fab fa-mastodon', title: 'Mastodon' },
         { key: 'instagram', cls: 'instagram', icon: 'fab fa-instagram', title: 'Instagram' },
         { key: 'facebook', cls: 'facebook', icon: 'fab fa-facebook-f', title: 'Facebook' },
         { key: 'twitter', cls: 'twitter', icon: 'fab fa-x-twitter', title: 'X (Twitter)' },
@@ -491,7 +500,25 @@ function closeModal() {
     modalOverlay.classList.remove('active');
 }
 
+function openModalLogin() {
+    modalOverlayLogin.classList.add('active');
+}
+
+function closeModalLogin() {
+    modalOverlayLogin.classList.remove('active');
+}
+
+function openModalNew() {
+    modalOverlayNew.classList.add('active');
+}
+
+function closeModalNew() {
+    modalOverlayNew.classList.remove('active');
+}
+
 modalClose.addEventListener('click', closeModal);
+modalCloseLogin.addEventListener('click', closeModalLogin);
+modalCloseNew.addEventListener('click', closeModalNew);
 
 modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) closeModal();

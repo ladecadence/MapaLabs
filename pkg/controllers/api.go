@@ -1,13 +1,14 @@
 package controllers
 
 import (
+	"crypto/rand"
 	"crypto/sha256"
 	"crypto/subtle"
 	"log"
 
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"io"
 	"net/http"
 	"os"
@@ -29,7 +30,17 @@ func ConfMiddleWare(dtb database.SQLite, c config.Config, h http.HandlerFunc) ht
 	})
 }
 
-func CheckAuth(r *http.Request) bool {
+func GenTokens() (string, string) {
+	sessiontoken := make([]byte, 32)
+	csrftoken := make([]byte, 32)
+	// can't fail
+	rand.Read(sessiontoken)
+	rand.Read(csrftoken)
+
+	return base64.URLEncoding.EncodeToString(sessiontoken), base64.URLEncoding.EncodeToString(csrftoken)
+}
+
+func CheckBasicAuth(r *http.Request) bool {
 	username, password, ok := r.BasicAuth()
 	if ok {
 		// get username from DB
@@ -99,7 +110,8 @@ func ApiGetLab(writer http.ResponseWriter, request *http.Request) {
 
 func ApiNewLab(writer http.ResponseWriter, request *http.Request) {
 	// check auth
-	authOk := CheckAuth(request)
+	authOk := CheckBasicAuth(request)
+
 	if authOk {
 		file, handler, err := request.FormFile("image")
 		if err != nil {
@@ -129,6 +141,7 @@ func ApiNewLab(writer http.ResponseWriter, request *http.Request) {
 		lab.Motivations = request.FormValue("motivations")
 		lab.Networks = request.FormValue("networks")
 		lab.Web = request.FormValue("web")
+		lab.Mastodon = request.FormValue("mastodon")
 		lab.Instagram = request.FormValue("instagram")
 		lab.Facebook = request.FormValue("facebook")
 		lab.Twitter = request.FormValue("twitter")
@@ -152,23 +165,13 @@ func ApiNewLab(writer http.ResponseWriter, request *http.Request) {
 			return
 		}
 
-		// reqBody, _ := io.ReadAll(request.Body)
-		// request.Body.Close()
-		// // try to create new mission
-		// lab := models.Lab{}
-		// err := json.Unmarshal(reqBody, &lab)
-		// if err != nil {
-		// 	log.Printf("❌ Error decoding body: %v", err.Error())
-		// 	writer.WriteHeader(http.StatusBadRequest)
-		// 	writer.Write([]byte("{}\n"))
-		// 	return
-		// }
 		err = db.UpsertLab(lab)
 		if err != nil {
 			writer.WriteHeader(http.StatusBadRequest)
 			writer.Write([]byte("{}\n"))
 			return
 		}
+
 		data, _ := json.Marshal(lab)
 		writer.WriteHeader(http.StatusOK)
 		writer.Write(data)
@@ -177,28 +180,4 @@ func ApiNewLab(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 	}
-}
-
-func WebRoot(writer http.ResponseWriter, request *http.Request) {
-	tmpl, err := template.ParseFiles("html/index.html")
-	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-		writer.Write([]byte("Problem loading web page"))
-		return
-	}
-
-	labs, err := db.GetLabs()
-	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-		writer.Write([]byte("Problem getting labs from database"))
-		return
-	}
-	err = tmpl.Execute(writer, labs)
-	if err != nil {
-		writer.WriteHeader(http.StatusInternalServerError)
-		writer.Write([]byte("Problem rendering web page"))
-		return
-	}
-
-	return
 }

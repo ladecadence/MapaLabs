@@ -45,6 +45,43 @@ h1 {
     flex-wrap: wrap;
 }
 
+.header-user {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    float: right;
+    justify-self: right;
+}
+
+.login-button {
+    padding: 8px 18px;
+    font-size: 1em;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    background-color: white;
+    font-family: 'ClashGrotesk', sans-serif;
+    min-width: 200px;
+    transition: border-color 0.3s;
+}
+
+.login-button:hover {
+    outline: none;
+    border-color: #007bff;
+}
+
+.user-flair {
+    text-align: center;
+    padding: 8px 18px;
+    font-size: 1em;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    background-color: white;
+    font-family: 'ClashGrotesk', sans-serif;
+    min-width: 200px;
+    transition: border-color 0.3s;
+}
+
 #search-input,
 #country-filter {
     padding: 8px 18px;
@@ -336,6 +373,7 @@ h1 {
 }
 
 .social-link:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.social-link.mastodon:hover { background-color: #563ACC; color: white; }
 .social-link.instagram:hover { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: white; }
 .social-link.facebook:hover { background-color: #1877f2; color: white; }
 .social-link.twitter:hover { background-color: #000; color: white; }

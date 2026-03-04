@@ -12,6 +12,9 @@ func RegisterRoutes(db database.SQLite, config config.Config, router *http.Serve
 	// web
 	router.Handle("GET /static/", http.StripPrefix("/static", http.FileServer(http.Dir("static/"))))
 	router.HandleFunc("GET /", controllers.ConfMiddleWare(db, config, controllers.WebRoot))
+	router.HandleFunc("POST /login", controllers.ConfMiddleWare(db, config, controllers.WebLogin))
+	router.HandleFunc("POST /logout", controllers.ConfMiddleWare(db, config, controllers.WebLogout))
+	router.HandleFunc("POST /newlab", controllers.ConfMiddleWare(db, config, controllers.WebNewLab))
 
 	// labs
 	router.HandleFunc("GET /api/labs", controllers.ConfMiddleWare(db, config, controllers.ApiGetLabs))
