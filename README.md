@@ -7,6 +7,7 @@ Web app for the Map of the Encuentro de Labs
 The backend is programmed using Go, after you install Go SDK (https://go.dev), download this repo and you can compile the app with the Go build system:
 ```
 $ cd MapaLabs
+$ go mod tidy
 $ go build cmd/mapalabs.go
 ```
 
