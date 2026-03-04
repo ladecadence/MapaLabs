@@ -44,17 +44,20 @@ h1 {
     grid-gap: 10px;
 }
 
-.header-controls-child {
+.header-section {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
-.header-user {
+/* .header-user {
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
     float: right;
     justify-self: right;
-}
+} */
 
 .login-button {
     padding: 8px 18px;
