@@ -39,14 +39,12 @@ h1 {
 }
 
 .header-controls {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
 }
 
 .header-controls-child {
-    flex: 1;
 }
 
 .header-user {
