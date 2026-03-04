@@ -24,7 +24,6 @@ func WebLogin(writer http.ResponseWriter, request *http.Request) {
 	user, err := db.GetUser(username)
 	if err != nil {
 		log.Printf("❌ User not in DB: %v", err.Error())
-		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -66,14 +65,12 @@ func WebLogin(writer http.ResponseWriter, request *http.Request) {
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 
 	} else {
-		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 	}
 }
 
 func WebLogout(writer http.ResponseWriter, request *http.Request) {
 	if err := Authorize(request, db); err != nil {
-		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
@@ -106,13 +103,11 @@ func WebLogout(writer http.ResponseWriter, request *http.Request) {
 	// clear tokens from database
 	usercookie, err := request.Cookie("username")
 	if err != nil || usercookie.Value == "" {
-		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 	user, err := db.GetUser(usercookie.Value)
 	if err != nil {
-		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
