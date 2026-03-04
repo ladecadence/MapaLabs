@@ -23,6 +23,7 @@ func WebLogin(writer http.ResponseWriter, request *http.Request) {
 
 	user, err := db.GetUser(username)
 	if err != nil {
+		log.Printf("❌ User not in DB: %v", err.Error())
 		writer.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
 		return
