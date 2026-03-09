@@ -175,6 +175,9 @@ fetch("http://localhost:8080/api/labs")
                     const pais = row.country || '';
                     const descripcion = row.description || '';
                     const fechaComienzo = row.date || '';
+                    const tipologia = row.typology || null;
+                    const gobernanza = row.governance || null;
+                    const temas = row.themes || null;
                     const paginaWeb = row.web || '';
                     const mastodon = row.mastodon || '';
                     const instagram = row.instagram || '';
@@ -195,7 +198,8 @@ fetch("http://localhost:8080/api/labs")
 
                     const labIndex = labs.length;
                     labs.push({
-                        nombre, ciudad, pais, descripcion, fechaComienzo,
+                        nombre, ciudad, pais, descripcion, fechaComienzo, 
+                        tipologia, gobernanza, temas, 
                         paginaWeb, mastodon, instagram, facebook, twitter, spotify,
                         linkedin, tiktok, twitch, youtube, representante,
                         cargoRepresentante, semblanza, imagen, flickr, lat, lng,
@@ -422,6 +426,186 @@ function showLabInfo(index) {
         p.appendChild(document.createTextNode(lab.fechaComienzo));
         container.appendChild(p);
     }
+
+    if (lab.tipologia) {
+        const p = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = 'Tipología: ';
+        p.appendChild(strong);
+        p.appendChild(document.createElement('br'));
+        // check boxes
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "location" ; // need unique Ids!
+        checkbox.checked = lab.tipologia.location;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "location";
+        label.appendChild(document.createTextNode("Espacio Físico"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "nomad" ; // need unique Ids!
+        checkbox.checked = lab.tipologia.nomad;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "nomad";
+        label.appendChild(document.createTextNode("Itinerante"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+
+        container.appendChild(p);
+    }
+
+    if (lab.gobernanza) {
+        const p = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = 'Gobernanza: ';
+        p.appendChild(strong);
+        p.appendChild(document.createElement('br'));
+        // check boxes
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "public" ; // need unique Ids!
+        checkbox.checked = lab.gobernanza.public;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "public";
+        label.appendChild(document.createTextNode("Pública"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "private" ; // need unique Ids!
+        checkbox.checked = lab.gobernanza.private;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "private";
+        label.appendChild(document.createTextNode("Privada"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+
+        container.appendChild(p);
+    }
+
+    if (lab.temas) {
+        const p = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = 'Temáticas: ';
+        p.appendChild(strong);
+        p.appendChild(document.createElement('br'));
+        // check boxes
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "environment" ; // need unique Ids!
+        checkbox.checked = lab.temas.environment;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "environment";
+        label.appendChild(document.createTextNode("Medio ambiente"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "digital_culture" ; // need unique Ids!
+        checkbox.checked = lab.temas.digital_culture;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "digital_culture";
+        label.appendChild(document.createTextNode("Cultura digital"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "arts" ; // need unique Ids!
+        checkbox.checked = lab.temas.arts;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "arts";
+        label.appendChild(document.createTextNode("Arte"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "territory" ; // need unique Ids!
+        checkbox.checked = lab.temas.territory;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "territory";
+        label.appendChild(document.createTextNode("Territorio/Ciudad"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "citizen_science" ; // need unique Ids!
+        checkbox.checked = lab.temas.citizen_science;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "citizen_science";
+        label.appendChild(document.createTextNode("Ciencia ciudadana"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "memory" ; // need unique Ids!
+        checkbox.checked = lab.temas.memory;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "memory";
+        label.appendChild(document.createTextNode("Memoria"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = "gender" ; // need unique Ids!
+        checkbox.checked = lab.temas.gender;
+        checkbox.disabled = true;
+        var label = document.createElement('label');
+        label.htmlFor = "gender";
+        label.appendChild(document.createTextNode("Género"));
+
+        p.appendChild(checkbox);
+        p.appendChild(label);
+        p.appendChild(document.createElement('br'));
+
+        container.appendChild(p);
+    }
+
 
     // Redes sociales
     const socialDefs = [
