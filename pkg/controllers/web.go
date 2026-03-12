@@ -69,6 +69,50 @@ func WebLogin(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func WebUpdateUser(writer http.ResponseWriter, request *http.Request) {
+	username := request.FormValue("username")
+	password := request.FormValue("currentpassword")
+
+	user, err := db.GetUser(username)
+	if err != nil {
+		log.Printf("❌ User not in DB: %v", err.Error())
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	passwordHash := fmt.Sprintf("%x", sha256.Sum256([]byte(password)))
+	passwordMatch := (subtle.ConstantTimeCompare([]byte(passwordHash), []byte(user.Password)) == 1)
+	if passwordMatch {
+		// check new passwords
+		newPassword := request.FormValue("newpassword")
+		repeatNewPassword := request.FormValue("repeatnewpassword")
+
+		// check passwords again
+		if newPassword != repeatNewPassword {
+			http.Error(writer, "Passwords don't match", http.StatusBadRequest)
+			return
+		}
+
+		// password lenght
+		if len(newPassword) < 8 {
+			http.Error(writer, "Password too short", http.StatusBadRequest)
+			return
+		}
+
+		// ok, hash password and update user
+		hashedNewPassword := fmt.Sprintf("%x", sha256.Sum256([]byte(newPassword)))
+		user.Password = hashedNewPassword
+
+		// ok, update
+		db.UpsertUser(user)
+
+		// go to main page
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+
+	} else {
+		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
+	}
+}
+
 func WebLogout(writer http.ResponseWriter, request *http.Request) {
 	if err := Authorize(request, db); err != nil {
 		http.Error(writer, "Unauthorized", http.StatusUnauthorized)
@@ -124,41 +168,66 @@ func WebRoot(writer http.ResponseWriter, request *http.Request) {
 	tmpl, err := template.ParseFiles(filepath.Join(conf.MainPath, "html/index.html"))
 
 	if err != nil {
+		log.Printf("❌ Error rendering page: %v", err.Error())
 		writer.WriteHeader(http.StatusInternalServerError)
 		writer.Write([]byte("Problem loading web page"))
 		return
 	}
 
-	// labs, err := db.GetLabs()
-	// if err != nil {
-	// 	writer.WriteHeader(http.StatusInternalServerError)
-	// 	writer.Write([]byte("Problem getting labs from database"))
-	// 	return
-	// }
-
 	// pass user or not
 	if err = Authorize(request, db); err != nil {
 		log.Printf("❌ Not logged in: %v", err.Error())
-		err = tmpl.Execute(writer, nil)
+		data := struct {
+			ApiURL string
+			User   *models.User
+		}{ApiURL: conf.URL, User: nil}
+		err = tmpl.Execute(writer, data)
+		if err != nil {
+			log.Printf("❌ Error rendering page: %v", err.Error())
+			writer.WriteHeader(http.StatusInternalServerError)
+			writer.Write([]byte("Problem rendering web page: "))
+			writer.Write([]byte(err.Error()))
+			return
+		}
 		return
 	} else {
 		usercookie, err := request.Cookie("username")
 		if err != nil || usercookie.Value == "" {
 			// what happen!
 			err = tmpl.Execute(writer, nil)
+			if err != nil {
+				log.Printf("❌ Error rendering page: %v", err.Error())
+				writer.WriteHeader(http.StatusInternalServerError)
+				writer.Write([]byte("Problem rendering web page: "))
+				writer.Write([]byte(err.Error()))
+				return
+			}
 			return
 		}
 		user, err := db.GetUser(usercookie.Value)
 		if err != nil {
 			// stranger things
 			err = tmpl.Execute(writer, nil)
+			if err != nil {
+				log.Printf("❌ Error rendering page: %v", err.Error())
+				writer.WriteHeader(http.StatusInternalServerError)
+				writer.Write([]byte("Problem rendering web page: "))
+				writer.Write([]byte(err.Error()))
+				return
+			}
 			return
 		}
 
-		// ok, render with user
-		err = tmpl.Execute(writer, user)
+		// ok, render with URL and user
+		data := struct {
+			ApiURL string
+			User   models.User
+		}{ApiURL: conf.URL, User: user}
+
+		err = tmpl.Execute(writer, data)
 
 		if err != nil {
+			log.Printf("❌ Error rendering page: %v", err.Error())
 			writer.WriteHeader(http.StatusInternalServerError)
 			writer.Write([]byte("Problem rendering web page: "))
 			writer.Write([]byte(err.Error()))

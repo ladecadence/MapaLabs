@@ -57,17 +57,28 @@ let fuse = null;
 
 // ── Referencias DOM ───────────────────────────────────────
 const countryFilter = document.getElementById('country-filter');
+
 const modalOverlay = document.getElementById('modal-overlay');
 const modalOverlayLogin = document.getElementById('modal-overlay-login');
 const modalOverlayNew = document.getElementById('modal-overlay-new');
+const modalOverlayUser = document.getElementById('modal-overlay-user');
+
 const modalContent = document.getElementById('modal-content');
 const modalContentLogin = document.getElementById('modal-content-login');
 const modalContentNew = document.getElementById('modal-content-new');
+const modalContentUser = document.getElementById('modal-content-user');
+
 const modalClose = document.getElementById('modal-close');
 const modalCloseLogin = document.getElementById('modal-close-login');
 const modalCloseNew = document.getElementById('modal-close-new');
+const modalCloseUser = document.getElementById('modal-close-user');
+
+const currentPasswordInput = document.getElementById('currentpassword');
+const newPasswordInput = document.getElementById('newpassword');
+const repeatNewPasswordInput = document.getElementById('repeatnewpassword');
 
 const searchInput = document.getElementById('search-input');
+const userSubmit = document.getElementById('usersubmit');
 
 // ── Carga CSV ─────────────────────────────────────────────
 // fetch('data.csv')
@@ -159,7 +170,7 @@ const searchInput = document.getElementById('search-input');
 //         });
 //     })
 //     .catch(error => console.error('Error cargando el CSV:', error));
-fetch("http://localhost:8080/api/labs")
+fetch(apiURL + "/api/labs")
     .then(response => {
         if (!response.ok) throw new Error('Error al cargar labs de la API');
         return response.json();
@@ -700,9 +711,18 @@ function closeModalNew() {
     modalOverlayNew.classList.remove('active');
 }
 
+function openModalUser() {
+    modalOverlayUser.classList.add('active');
+}
+
+function closeModalUser() {
+    modalOverlayUser.classList.remove('active');
+}
+
 modalClose.addEventListener('click', closeModal);
 modalCloseLogin.addEventListener('click', closeModalLogin);
 modalCloseNew.addEventListener('click', closeModalNew);
+modalCloseUser.addEventListener('click', closeModalUser);
 
 modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) closeModal();
@@ -711,3 +731,26 @@ modalOverlay.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
 });
+
+
+function checkNewPassword() {
+    const errorMsgSpan = document.getElementById('passworderror');
+
+    if (repeatNewPasswordInput.value !== newPasswordInput.value) {
+        errorMsgSpan.textContent = "Los passwords no coinciden.";
+    } else {
+        errorMsgSpan.textContent = "";
+        if (currentPasswordInput.value != "") {
+            userSubmit.disabled = false;
+        }
+    }
+    if (newPasswordInput.value.length < 8) {
+        errorMsgSpan.textContent = "El nuevo password es demasiado corto.";
+        userSubmit.disabled = true;
+    }
+}
+
+repeatNewPasswordInput.addEventListener('input', checkNewPassword);
+newPasswordInput.addEventListener('input', checkNewPassword);
+currentPasswordInput.addEventListener('input', checkNewPassword);
+

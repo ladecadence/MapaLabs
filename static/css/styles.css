@@ -50,15 +50,6 @@ h1 {
     gap: 10px;
 }
 
-/* .header-user {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    float: right;
-    justify-self: right;
-} */
-
 .login-button {
     padding: 8px 18px;
     font-size: 1em;
@@ -75,7 +66,7 @@ h1 {
     border-color: #007bff;
 }
 
-.user-flair {
+.user-button {
     text-align: center;
     padding: 8px 18px;
     font-size: 1em;
@@ -85,6 +76,10 @@ h1 {
     font-family: 'ClashGrotesk', sans-serif;
     min-width: 100px;
     transition: border-color 0.3s;
+}
+.user-button:hover {
+    outline: none;
+    border-color: #007bff;
 }
 
 #search-input,

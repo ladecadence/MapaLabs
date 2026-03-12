@@ -14,6 +14,9 @@
 </head>
 
 <body>
+    <script>
+        const apiURL = {{.ApiURL}};
+    </script>
     <header class="app-header">
         <h1>Laboratorios de Innovación Ciudadana</h1>
         <div class="header-controls">
@@ -30,8 +33,10 @@
             </div>
             <div>
                 <div class="header-section">
-                    {{if .Name}}
-                    <span class="user-flair"><i class="fas fa-user"></i> {{.Name}}</span>
+                    {{if .User}}
+                    <button class="user-button" onclick="openModalUser()"><i class="fas fa-user"></i> 
+                        {{.User.Name}}
+                    </button>
                     <button class="login-button" onclick="openModalNew()"><i class="fas fa-plus-square"></i> Añadir
                         Lab</button>
                     <form id="logout-form" action="/logout" method="post">
@@ -39,7 +44,8 @@
                     </form>
                     {{else}}
                     <button class="login-button" onclick="openModalLogin()"><i class="fas fa-sign-in"></i>
-                        Login</button>
+                        Login
+                    </button>
                     {{end}}
                 </div>
             </div>
@@ -77,12 +83,38 @@
                     <input type="text" id="username" name="username"><br>
                     <label for="password">Password:</label><br>
                     <input type="password" id="password" name="password"><br><br>
-                    <input type="hidden" name="csrf" value="{{ .CSRF}}">
+                    {{if .User}}
+                    <input type="hidden" name="csrf" value="{{ .User.CSRF}}">
+                    {{end}}
                     <input type="submit" value="Submit">
                 </form>
             </div>
         </div>
     </div>
+
+        <!-- Modal / User  -->
+        <div class="modal-overlay" id="modal-overlay-user">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+                <button class="modal-close" id="modal-close-user" aria-label="Cerrar">&times;</button>
+                <div class="modal-content" id="modal-content-user">
+                    {{if .User}}
+                    <h2 class="modal-title">{{.User.Name}}</h2>
+                    <form action="/updateuser" method="post">
+                        <input type="hidden" id="username" name="username" value={{.User.Name}}><br><br>
+                        <label for="currentpassword">Password:</label><br>
+                        <input type="password" id="currentpassword" name="currentpassword"><br><br>
+                        <label for="newpassword">Nuevo password:</label><br>
+                        <input type="password" id="newpassword" name="newpassword"><br><br>
+                        <label for="repeatnewpassword">Repite nuevo password:</label><br>
+                        <input type="password" id="repeatnewpassword" name="repeatnewpassword"><br><br>
+                        <input type="hidden" name="csrf" value="{{ .User.CSRF}}">
+                        <input type="submit" value="Submit" id="usersubmit" disabled="true">
+                    </form>
+                    {{end}}
+                    <span id="passworderror"></span>
+                </div>
+            </div>
+        </div>
 
     <!-- Modal / New Lab  -->
     <div class="modal-overlay" id="modal-overlay-new">
@@ -218,7 +250,9 @@
                     <input type="file" id="image" name="image" accept="image/*"><br><br>
 
                     <br>
-                    <input type="hidden" name="csrf" value="{{ .CSRF}}">
+                    {{if .User}}
+                    <input type="hidden" name="csrf" value="{{ .User.CSRF}}">
+                    {{end}}
                     <input type="submit" value="Enviar">
                 </form>
             </div>

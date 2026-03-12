@@ -15,6 +15,7 @@ func RegisterRoutes(db database.SQLite, config config.Config, router *http.Serve
 	router.HandleFunc("GET /", controllers.ConfMiddleWare(db, config, controllers.WebRoot))
 	router.HandleFunc("POST /login", controllers.ConfMiddleWare(db, config, controllers.WebLogin))
 	router.HandleFunc("POST /logout", controllers.ConfMiddleWare(db, config, controllers.WebLogout))
+	router.HandleFunc("POST /updateuser", controllers.ConfMiddleWare(db, config, controllers.WebUpdateUser))
 	router.HandleFunc("POST /newlab", controllers.ConfMiddleWare(db, config, controllers.WebNewLab))
 
 	// labs

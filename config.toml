@@ -1,6 +1,6 @@
 addr = "localhost"
 port = 8080
-url = ""
+url = "http://localhost:8080"
 database = "mapalabs.db"
 main_path = ""
 image_path = "static/images/"
