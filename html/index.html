@@ -107,7 +107,7 @@
                         <input type="password" id="newpassword" name="newpassword"><br><br>
                         <label for="repeatnewpassword">Repite nuevo password:</label><br>
                         <input type="password" id="repeatnewpassword" name="repeatnewpassword"><br><br>
-                        <input type="hidden" name="csrf" value="{{ .User.CSRF}}">
+                        <input type="hidden" name="csrf" value={{.User.CSRF}}>
                         <input type="submit" value="Submit" id="usersubmit" disabled="true">
                     </form>
                     {{end}}
