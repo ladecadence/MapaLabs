@@ -259,7 +259,7 @@ func WebNewLab(writer http.ResponseWriter, request *http.Request) {
 	}
 	defer file.Close()
 
-	f, err := os.OpenFile(conf.ImagePath+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(conf.MainPath+conf.ImagePath+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		log.Printf("❌ Error saving the file: %v", err.Error())
 		return
